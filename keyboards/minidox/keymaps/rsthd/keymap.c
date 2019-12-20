@@ -35,15 +35,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 [_RSTHD] = LAYOUT( \
+<<<<<<< Local Changes
+    KC_J,   KC_C,    KC_Y,   KC_F,   KC_K,            KC_Z,  KC_L,    KC_COMMA,    KC_U,   KC_Q, \
+    KC_R,    KC_S,    KC_T,    KC_H,        KC_D,     KC_M,   KC_N,        KC_A,        KC_I ,        KC_O,   \
+    LCTRL_T(KC_SLSH), KC_V,    KC_G,    KC_P, KC_B,  KC_X,  KC_W,        KC_DOT,      OSM(MOD_RSFT),      RCTRL_T(KC_QUOT), \
+     OSM(MOD_LGUI), LT(_RAISE,  KC_BSPC),   KC_E,     KC_SPC, LT(_LOWER, KC_TAB), OSM(MOD_RALT)    \
+=======
+<<<<<<< Updated upstream
     KC_J,        KC_C,        KC_Y,        KC_F,       KC_K,      KC_Z,  KC_L,        KC_COMMA,     KC_U,        KC_Q, \
     SFT_T(KC_R), CTL_T(KC_S), ALT_T(KC_T), GUI_T(KC_H), KC_D,     KC_M,  GUI_T(KC_N), ALT_T(KC_A), CTL_T(KC_I), SFT_T(KC_O),\
     KC_SCLN,     KC_V,        KC_G,        KC_P,        KC_B,     KC_X,  KC_W,        KC_DOT,      KC_QUOT,      KC_SLSH, \
              KC_CAPS,         KC_BSPC,        LT(_RAISE, KC_E),     LT(_LOWER, KC_SPC), KC_TAB, TG(RAISE)    \
+=======
+    LCTRL_T(KC_J),   KC_C,    KC_Y,   KC_F,   KC_K,        KC_Z,  KC_L,    KC_COMMA,    KC_U,   RCTRL_T(KC_Q), \
+    KC_R,    KC_S,    KC_T,    KC_H,        KC_D,         KC_M,   KC_N,        KC_A,        KC_I ,        KC_O,   \
+    LSFT_T(KC_GRAVE), KC_V,    KC_G,    KC_P, LSFT_T(KC_B),         KC_X,  KC_W,        KC_DOT,      KC_SCLN,      RSFT_T(KC_QUOT), \
+             OSM(MOD_LGUI), LT(_RAISE,  KC_BSPC),   KC_E,     KC_SPC, LT(_LOWER, KC_TAB), OSM(MOD_RALT)    \
+>>>>>>> Stashed changes
+>>>>>>> External Changes
 ),
 
 [_RAISE] = LAYOUT( \
   KC_ESC,    KC_AT,    KC_HASH, KC_DLR,  KC_PERC,       KC_PLUS,  KC_7,    KC_8,   KC_9,   KC_0,    \
-  SFT_T(KC_CIRCUMFLEX),   KC_AMPR,  KC_TILD, KC_PIPE, KC_BSLS,      KC_MINS,  KC_4,    KC_5,   KC_6, SFT_T(KC_EQL), \
+  KC_CIRCUMFLEX,   KC_AMPR,  KC_TILD, KC_PIPE, KC_BSLS,  KC_MINS,  KC_4,    KC_5,   KC_6, KC_EQL, \
   _______,   _______,   KC_UNDS, KC_GRV,  KC_PDOT,       KC_ASTR, KC_1,     KC_2,   KC_3, _______, \
                         _______, _______, _______,       KC_ENT,   MO(_ADJUST), _______                    \
 ),
