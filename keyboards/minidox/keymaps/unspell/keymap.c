@@ -12,8 +12,11 @@ extern keymap_config_t keymap_config;
 #define _BAR_STR 3
 #define _VOWEL   5
 #define _VOW_BAR 6
-#define _RSTHD   8
-#define _ADJUST  16
+
+// Defines for task manager and such
+#define CALTDEL LCTL(LALT(KC_DEL))
+#define TSKMGR LCTL(LSFT(KC_ESC))
+
 
 enum custom_keycodes {
   FORMS = SAFE_RANGE,
@@ -21,21 +24,69 @@ enum custom_keycodes {
   STROKE,
   BAR_STR,
   VOWEL,
-  ,
+  VOW_BAR,
 };
 
-// Defines for task manager and such
-#define CALTDEL LCTL(LALT(KC_DEL))
-#define TSKMGR LCTL(LSFT(KC_ESC))
+
+
+//Code for the vowel layer tap functionnalaty
+
+// tapdance keycodes
+enum td_keycodes {
+VOW_NOBAR,
+VOW_WITHBAR,
+C_UC,
+W_UC,
+O_UC,
+E_UC,
+A_UC,
+B_UC,
+U_UC,
+G_UC,
+X_UC,
+D_UC,
+V_UC,
+Q_UC
+
+ // Our example key: `LALT` when held, `(` when tapped. Add additional keycodes for each tapdance.
+};
+
+// define a type containing as many tapdance states as you need
+typedef enum {
+  SINGLE_TAP,
+  SINGLE_HOLD,
+  DOUBLE_SINGLE_TAP
+} td_state_t;
+
+// create a global instance of the tapdance state type
+static td_state_t td_state;
+
+// declare your tapdance functions:
+
+// function to determine the current tapdance state
+int cur_dance (qk_tap_dance_state_t *state);
+
+// `finished` and `reset` functions for each tapdance keycode
+void vownob_finished (qk_tap_dance_state_t *state, void *user_data);
+void vownob_reset (qk_tap_dance_state_t *state, void *user_data);
+
+void vowwib_finished (qk_tap_dance_state_t *state, void *user_data);
+void vowwib_reset (qk_tap_dance_state_t *state, void *user_data);
+
+
+
+//In Layer declaration, add tap dance item in place of a key code
+
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Basic const
  *
  * ,----------------------------------.           ,----------------------------------.
- * |      |   ,  |   n  |   N  |      |           |      |   l  |   R  |   .  |      |
+ * |      |   ,  |   n  |   N  |      |           |      |   R  |   r  |   .  |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |   k  |   r  |   s  |   p  |  (   |           |   )  |   m  |   t  |   j  |   f  |
+ * |   k  |   f  |   s  |   p  |  (   |           |   )  |   m  |   t  |   j  |   l  |
  * |------+------+------+------+------|           |------+------+------+------+------|
  * |      |   `  |Down  | Up   | Ctrl |           |  Alt | Left | Right|   '  |  ABC |
  * `----------------------------------'           `----------------------------------'
@@ -46,17 +97,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                  `------'    `------'
  */
 [_FORMS] = LAYOUT( \
-  _______, KC_COMM, KC_N, LSFT(KC_N), _______,      _______,    KC_L,    LSFT(KC_R),    KC_DOT,    _______,    \
-  KC_K,    KC_R,    KC_S,    KC_P,    KC_LPRN,      KC_RPRN,  KC_M,    KC_T,    KC_J,    KC_F, \
-  _______, KC_SCLN   KC_DOWN, KC_UP,  OSM(KC_LCTRL), OSM(KC_LALT), KC_LEFT, KC_RIGHT, KC_QUOT,  _______, \
-                    LGUI_T(KC_BKSP), _STROKE, LT( _VOWEL, KC_H),    KC_SPC, _BAR, RGUI(TAB)              \
+  _______, KC_COMM, KC_N, KC_K, _______,      _______,    LSFT(KC_R),    KC_R,    KC_DOT,    _______,    \
+  LSFT(KC_N), KC_F,  KC_S,    KC_P,    KC_LPRN,      KC_RPRN,  KC_M,    KC_T,    KC_J,    KC_L, \
+  _______, KC_GRV,   KC_DOWN, KC_UP,  OSM(KC_LCTRL), OSM(KC_LALT), KC_LEFT, KC_RIGHT, KC_QUOT,  _______, \
+           LGUI_T(KC_BSPC), MO(_STROKE), TD(VOW_NOBAR),    KC_SPC, MO(_BAR), LGUI_T(KC_TAB)              \
 ),
 /* Const + bar
  *
  * ,----------------------------------.           ,----------------------------------.
- * |   \  |   7  |   8  |   9  |   0  |           |   *  |   +  |   -  |      |   /  |
+ * |   \  |   7  |   8  |   9  |   0  |           |   +  |   -  |   *  |      |   /  |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |      |   4  |   5  |   6  |   [  |           |   ]  |   M  |   y  |   z  |   =  |
+ * |      |   4  |   5  |   6  |   [  |           |   ]  |   M  |   y  |   z  |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
  * |      |   1  |   2  |   3  |      |           |      |      |      |      |      |
  * `----------------------------------'           `----------------------------------'
@@ -67,18 +118,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 `------'    `------'
  */
 [_BAR] = LAYOUT( \
-  KC_BSLS,    KC_P7,   KC_P8,   KC_P9,   KC_P0,      KC_PAST,  KC_PPLS, KC_PMNS,    _______,    KC_PSLS,    \
-  _______,    KC_P4,   KC_P5,   KC_P6,   KC_LBRC,    KC_RBRC, LSFT(KC_M),    KC_Y,    KC_Z,    KC_EQL, \
+  KC_BSLS,    KC_P7,   KC_P8,   KC_P9,   KC_P0,      _______, KC_MINS, KC_PAST,  _______, KC_PSLS,    \
+  KC_EQL,    KC_P4,   KC_P5,   KC_P6,   KC_LBRC,    KC_RBRC, LSFT(KC_M), KC_Y,   KC_Z,    XXXXXXX, \
   _______,    KC_P1,   KC_P2,   KC_P3,   _______,    _______,    _______,    _______, _______,  _______, \
-                    KC_LCTL, _STROKE, KC_SPC,          KC_BSPC, _______, OSM(MOD_LSFT)                 \
+                    _______, _______, TD(VOW_WITHBAR),          _______, _______, _______                 \
 ),
 
 /* Const + stroke
  *
  * ,----------------------------------.           ,----------------------------------.
- * |      |   ?  |   @  |   R  |      |           |      |      |   &  |   !  |      |
+ * |      |   ?  |   @  |   K  |      |           |      |      |      |   !  |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |   K  |      |   S  |   P  |   {  |           |   }  |   M  |   T  |   J  |   F  |
+ * |      |  F   |   S  |   P  |   {  |           |   }  |   M  |   T  |   J  |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
  * |      |  ``  |      |      |      |           |      |      |      |   "  |      |
  * `----------------------------------'           `----------------------------------'
@@ -89,20 +140,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 `------'    `------'
  */
 [_STROKE] = LAYOUT( \
-  _______,     KC_QUES, KC_E,       LSFT(KC_M), _______,    _______, _______, KC_AMPR,  KC_EXLM,  _______,    \
-  LSFT(KC_K),  _______,  LSFT(KC_S), LSFT(KC_P), KC_LCBR,    KC_RCBR,  LSFT(KC_M), LSFT(KC_T),  LSFT(KC_J), LSFT(KC_F),\
+  _______,     KC_QUES, XXXXXXX,  LSFT(KC_K), _______,    _______, XXXXXXX, XXXXXXX,  KC_EXLM,  _______,    \
+  XXXXXXX, LSFT(KC_F), LSFT(KC_S), LSFT(KC_P), KC_LCBR,    KC_RCBR,  XXXXXXX, LSFT(KC_T), LSFT(KC_J), XXXXXXX,  \
   _______, _______, _______, _______, _______,   _______, _______, _______,  _______,   _______, \
-                LGUI_T(KC_ENT), LT(BAR, KC_ESC), LT(VOWEL, KC_BSPC),    CTL_T(KC_SPC), LT(_LOWER, KC_TAB), ALT_T(KC_ENT)  \
+                _______, _______, _______,          KC_ENT, _______, _______  \
 ),
 
 /* Const + stroke + bar
  *
  * ,----------------------------------.           ,----------------------------------.
- * |  F1  |  F2  |  F3  |  F4  |      |           |      |      |      |      |      |
+ * |      |  #   |  €   |   %  |      |           |      |      |      |      |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |  F5  |  F6  |  F7  |  F8  |   ⟨  |           |   ⟩  |      |   Y  |   Z  |      |
+ * |   ^  |  &   |   ~  |  |   |   ⟨  |           |   ⟩  |      |   Y  |   Z  |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |  F9  |  F10 | F11  |  F12 |      |           |      |      |      |      |      |
+ * |      |      |      |      |      |           |      |      |      |      |      |
  * `----------------------------------'           `----------------------------------'
  *                  ,---------------------.    ,------,--------------.
  *                  |Ent/GUI|STROKE|      |    |      |BAR   |Ent/GUI|
@@ -111,19 +162,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 `------'    `------'
  */
 [_BAR_STR] = LAYOUT( \
-  KC_F1,    KC_F2,  KC_F3,   KC_F4,   _______,      _______, _______, _______, _______, _______,    \
-  KC_F5,   KC_F6,   KC_F7,   KC_F8,   _______,      _______, _______, LSFT(KC_Y), LSFT(KC_Z), _______, \
-  KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______,      _______, _______, _______, _______, _______, \
-                    KC_LCTL, LOWER, KC_SPC,         KC_BSPC, RAISE, OSM(MOD_LSFT)                 \
+  _______, KC_HASH, LALT(KC_3),KC_PERC,   _______,      _______, XXXXXXX, XXXXXXX, _______, _______,    \
+  KC_CIRC, KC_AMPR, KC_TILD, KC_PIPE,   _______,      _______, XXXXXXX, LSFT(KC_Y), LSFT(KC_Z), XXXXXXX, \
+  _______, _______, KC_UNDS, KC_GRV,    _______,      _______, _______, _______, _______, _______, \
+                    _______, _______, _______,          _______, _______, _______                 \
 ),
 
 
 /* Vowel
  *
  * ,----------------------------------.           ,----------------------------------.
- * |      |      |      |   L  |      |           |      |      |   c  |      |      |
+ * |      |      |  L   |  W   |      |           |      |  c   |      |      |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |   w  |   o  |   e  |   a  |   <  |           |   >  |   b  |   u  |   g  |   x  |
+ * |      |   x  |   e  |   a  |   <  |           |   >  |   b  |   u  |   g  |   o  |
  * |------+------+------+------+------|           |------+------+------+------+------|
  * |      |      | PgDn | PgUp |      |           |      | Home |  End |      |      |
  * `----------------------------------'           `----------------------------------'
@@ -134,20 +185,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 `------'    `------'
  */
 [_VOWEL] = LAYOUT( \
-  _______, _______, _______, LSFT(KC_L), _______,   _______, _______, KC_C,    _______, _______,    \
-  KC_W,    KC_O,    KC_E,    KC_A,    KC_LT,        KC_GT,   KC_B,    KC_U,    KC_G,    KC_X, \
-  _______, _______,    PG_UP, PG_DN, _______,       _______,    KC_HOME, KC_END, _______, _______, \
-                    KC_LCTL, _LOWER, KC_SPC,         KC_BSPC, RAISE, OSM(MOD_LSFT)                 \
+  _______, _______, LSFT(KC_L), TD(W_UC), _______,   _______,  TD(C_UC), TD(O_UC),  _______, _______,    \
+  XXXXXXX, TD(X_UC), TD(E_UC), TD(A_UC),  KC_LT,     KC_GT, TD(B_UC), TD(U_UC), TD(G_UC), XXXXXXX, \
+  _______, _______, KC_PGUP, KC_PGDN, _______,       _______,    KC_HOME, KC_END, _______, _______, \
+                    _______, _______, _______,       _______, _______, _______                 \
 ),
 
 /* Vowel + bar
  *
  * ,----------------------------------.           ,----------------------------------.
- * |      |      |      |      |      |           |      |      |      |      |      |
+ * |  F1  |  F2  |  F3  |  F4  |      |           |      |      |      |      |      |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |      |   d  |      |      |   ≤  |           |   ≥  |   v  |   q  |      |      |
+ * |  F5  |  F6  |  F7  |  F8  |   ≤  |           |   ≥  |   v  |   q  |      |   d  |
  * |------+------+------+------+------|           |------+------+------+------+------|
- * |      |      |      |      |      |           |      |      |      |      |      |
+ * |  F9  |  F10 | F11  |  F12 |      |           |      |      |      |      |      |
  * `----------------------------------'           `----------------------------------'
  *                  ,---------------------.    ,------,--------------.
  *                  |Ent/GUI|STROKE|      |    |      |BAR   |Ent/GUI|
@@ -156,81 +207,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 `------'    `------'
  */
 [_VOW_BAR] = LAYOUT( \
-  _______, _______, _______, _______, _______,      _______, _______, _______, _______, _______,    \
-  _______,    KC_D, _______, _______, _______,      _______,    KC_V,    KC_Q, _______, _______, \
-  _______, _______, _______, _______, _______,      _______, _______, _______, _______, _______, \
-                    KC_LCTL, LOWER, KC_SPC,         KC_BSPC, RAISE, OSM(MOD_LSFT)                 \
+  KC_F1,    KC_F2,  KC_F3,   KC_F4,   _______,      _______, XXXXXXX, TD(D_UC), _______, _______,    \
+  KC_F5,   KC_F6,   KC_F7,   KC_F8,   _______,      _______, TD(V_UC), TD(Q_UC), XXXXXXX, XXXXXXX, \
+  KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______,      _______, _______, _______, _______, _______, \
+                    _______, _______, _______,          _______, _______, _______                 \
 ),
 };
 
-//That'a all folks! Additional keymaps included for confirming all useful keys and functions are taken into the new layouts.
-
-/* Raise
- *
- * ,----------------------------------.           ,----------------------------------.
- * |   1  |   2  |   3  |   4  |   5  |           |   6  |   7  |   8  |   9  |   0  |
- * |------+------+------+------+------|           |------+------+------+------+------|
- * |  Tab | Left | Down |  Up  | Right|           |      |   -  |   =  |   [  |   ]  |
- * |------+------+------+------+------|           |------+------+------+------+------|
- * |  Ctrl|   `  |  GUI |  Alt |      |           |      |      |      |   \  |   '  |
- * `----------------------------------'           `----------------------------------'
- *                  ,--------------------.    ,------,-------------.
- *                  |      | LOWER|      |    |      | RAISE|      |
- *                  `-------------|      |    |      |------+------.
- *                                |      |    |      |
- *                                `------'    `------'
- *
-[_RAISE] = LAYOUT( \
-  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    \
-  KC_TAB,    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,      _______, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, \
-  KC_LCTL, KC_GRV,  KC_LGUI, KC_LALT, _______,      _______, _______, _______, KC_BSLS,  KC_QUOT, \
-                    _______, _______, _______,      _______, _______, _______                    \
-),
-
- * Lower
- *
- * ,----------------------------------.           ,----------------------------------.
- * |   !  |   @  |   #  |   $  |   %  |           |   ^  |   &  |   *  |   (  |   )  |
- * |------+------+------+------+------|           |------+------+------+------+------|
- * |  Esc |      |      |      |      |           |      |   _  |   +  |   {  |   }  |
- * |------+------+------+------+------|           |------+------+------+------+------|
- * |  Caps|   ~  |      |      |      |           |      |      |      |   |  |   "  |
- * `----------------------------------'           `----------------------------------'
- *                  ,--------------------.    ,------,-------------.
- *                  |      | LOWER|      |    |      | RAISE|  Del |
- *                  `-------------|      |    | Enter|------+------.
- *                                |      |    |      |
- *                                `------'    `------'
- *
-[_LOWER] = LAYOUT( \
-  KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, \
-  KC_ESC,  _______, _______, _______, _______,      _______, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, \
-  KC_CAPS, KC_TILD, _______, _______, _______,      _______, _______, _______, KC_PIPE,  KC_DQT, \
-                    _______, _______, _______,      KC_ENT,  _______, KC_DEL                    \
-),
-
- * Adjust (Lower + Raise)
- *
- * ,----------------------------------.           ,----------------------------------.
- * |  F1  |  F2  |  F3  |  F4  |  F5  |           |   F6 |  F7  |  F8  |  F9  |  F10 |
- * |------+------+------+------+------|           |------+------+------+------+------|
- * |  F11 |  F12 |      |      |      |           |      |      |      |Taskmg|caltde|
- * |------+------+------+------+------|           |------+------+------+------+------|
- * | Reset|      |      |      |      |           |      |      |      |      |      |
- * `----------------------------------'           `----------------------------------'
- *                  ,--------------------.    ,------,-------------.
- *                  |      | LOWER|      |    |      | RAISE|      |
- *                  `-------------|      |    |      |------+------.
- *                                |      |    |      |
- *                                `------'    `------'
- *
-[_ADJUST] =  LAYOUT( \
-  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,        KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10, \
-  KC_F11,  KC_F12,  _______, _______, _______,      _______, _______, _______, TSKMGR, CALTDEL, \
-  RESET,   _______, _______, _______, _______,      _______, _______, _______, _______,  _______, \
-                    _______, _______, _______,      _______,  _______, _______                    \
-)
- */
 
 void persistant_default_layer_set(uint16_t default_layer) {
   eeconfig_update_default_layer(default_layer);
@@ -238,11 +221,98 @@ void persistant_default_layer_set(uint16_t default_layer) {
 }
 
 
+// determine the tapdance state to return
+int cur_dance (qk_tap_dance_state_t *state) {
+  if (state->count == 1) {
+    if (state->interrupted || !state->pressed) { return SINGLE_TAP; }
+    else { return SINGLE_HOLD; }
+  }
+  if (state->count == 2) { return DOUBLE_SINGLE_TAP; }
+  else { return 3; } // any number higher than the maximum state value you return above
+}
 
+// handle the possible states for each tapdance keycode you define:
+
+void vownob_finished (qk_tap_dance_state_t *state, void *user_data) {
+  td_state = cur_dance(state);
+  switch (td_state) {
+    case SINGLE_TAP:
+      register_code16(KC_H);
+      break;
+    case SINGLE_HOLD:
+      layer_on(_VOWEL); // for a layer-tap key, use `layer_on(_MY_LAYER)` here
+      break;
+    case DOUBLE_SINGLE_TAP: // allow nesting of 2 parens `((` within tapping term
+      register_code (KC_RSFT);
+      register_code (KC_H);
+  }
+}
+
+void vownob_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (td_state) {
+    case SINGLE_TAP:
+      unregister_code16(KC_H);
+      break;
+    case SINGLE_HOLD:
+      layer_off(_VOWEL); // for a layer-tap key, use `layer_off(_MY_LAYER)` here
+      break;
+    case DOUBLE_SINGLE_TAP:
+      unregister_code (KC_RSFT);
+      unregister_code (KC_H);
+    }
+  }
+
+
+
+      void vowwib_finished (qk_tap_dance_state_t *state, void *user_data) {
+        td_state = cur_dance(state);
+        switch (td_state) {
+          case SINGLE_TAP:
+            register_code16(KC_I);
+            break;
+          case SINGLE_HOLD:
+            layer_on(_VOWEL); // for a layer-tap key, use `layer_on(_MY_LAYER)` here
+            break;
+          case DOUBLE_SINGLE_TAP: // allow nesting of 2 parens `((` within tapping term
+            register_code (KC_RSFT);
+            register_code (KC_I);
+        }
+      }
+
+      void vowwib_reset (qk_tap_dance_state_t *state, void *user_data) {
+        switch (td_state) {
+          case SINGLE_TAP:
+            unregister_code16(KC_I);
+            break;
+          case SINGLE_HOLD:
+            layer_off(_VOWEL); // for a layer-tap key, use `layer_off(_MY_LAYER)` here
+            break;
+          case DOUBLE_SINGLE_TAP:
+            unregister_code (KC_RSFT);
+            unregister_code (KC_I);
+  }
+}
+
+// define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
+qk_tap_dance_action_t tap_dance_actions[] = {
+  [VOW_NOBAR]ACTION_TAP_DANCE_FN_ADVANCED(NULL, vownob_finished, vownob_reset),
+  [VOW_WITHBAR]ACTION_TAP_DANCE_FN_ADVANCED(NULL, vowwib_finished, vowwib_reset),
+  [C_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_C, LSFT(KC_C)),
+  [W_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_W, LSFT(KC_W)),
+  [O_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_O, LSFT(KC_O)),
+  [E_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_E, LSFT(KC_E)),
+  [A_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_A, LSFT(KC_A)),
+  [B_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_B, LSFT(KC_B)),
+  [U_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_U, LSFT(KC_U)),
+  [G_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_G, LSFT(KC_G)),
+  [X_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_X, LSFT(KC_X)),
+  [D_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_D, LSFT(KC_D)),
+  [V_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_V, LSFT(KC_V)),
+  [Q_UC]  = ACTION_TAP_DANCE_DOUBLE(KC_Q, LSFT(KC_Q))
+};
 
 layer_state_t layer_state_set_user(layer_state_t state) {
   state = update_tri_layer_state(state, _BAR, _STROKE, _BAR_STR);
-  state = update_tri_layer_state(state, _VOW, _BAR, _VOW_BAR);
+  state = update_tri_layer_state(state, _VOWEL, _BAR, _VOW_BAR);
   return state;
-}
 }
