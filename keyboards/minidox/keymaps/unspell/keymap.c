@@ -118,7 +118,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                 `------'    `------'
  */
 [_BAR] = LAYOUT( \
-  KC_BSLS,    KC_P7,   KC_P8,   KC_P9,   KC_P0,      _______, KC_MINS, KC_PAST,  _______, KC_PSLS,    \
+  KC_BSLS,    KC_P7,   KC_P8,   KC_P9,   KC_P0,      KC_PLUS, KC_MINS, KC_PAST,  _______, KC_PSLS,    \
   KC_EQL,    KC_P4,   KC_P5,   KC_P6,   KC_LBRC,    KC_RBRC, LSFT(KC_M), KC_Y,   KC_Z,    XXXXXXX, \
   _______,    KC_P1,   KC_P2,   KC_P3,   _______,    _______,    _______,    _______, _______,  _______, \
                     _______, _______, TD(VOW_WITHBAR),          _______, _______, _______                 \
