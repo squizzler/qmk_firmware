@@ -2,7 +2,7 @@
 
 #define USE_SERIAL
 #define EE_HANDS
-
+#define MASTER_RIGHT
 
 #define COMBO_COUNT 10
 #define COMBO_TERM 100
