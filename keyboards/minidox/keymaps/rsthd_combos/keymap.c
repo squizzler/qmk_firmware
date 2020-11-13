@@ -33,7 +33,7 @@ const uint16_t PROGMEM dm_combo[] = {KC_D, KC_M, COMBO_END};
 const uint16_t PROGMEM bx_combo[] = {KC_B, KC_X, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-  [TOP_L] = COMBO(fk_combo, KC_ESC),
+  [TOP_L] = COMBO(fk_combo, KC_EXCL),
   [TOP_R] = COMBO(zl_combo, KC_AT),
   [MID_L] = COMBO(hd_combo, KC_TAB),
   [MID_R] = COMBO_ACTION(mn_combo),
@@ -94,9 +94,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                   _______, MO(_ADJUST), KC_0,     _______, _______, _______
 ),
 [_LOWER] = LAYOUT(
-   _______, KC_LBRC, KC_QUES, KC_RBRC, KC_BRMU,         KC_PGUP,  KC_HOME, KC_UP,   KC_END,  KC_VOLU,
-   KC_ESC, KC_LPRN,  KC_EXLM, KC_RPRN, KC_BRMD,         KC_PGDN, KC_LEFT, KC_DOWN, KC_RIGHT, KC_VOLD,
-   _______, _______, _______, _______, _______,         _______, KC_MPRV, KC_MPLY, KC_MNXT, KC__MUTE,
+   _______, KC_LBRC, KC_VOLU, KC_RBRC, KC_BRMU,         KC_PGUP,  KC_HOME, KC_UP,   KC_END,  _______,
+   KC_ESC, KC_LPRN,  KC_VOLD, KC_RPRN, KC_BRMD,         KC_PGDN, KC_LEFT, KC_DOWN, KC_RIGHT, _______,
+   _______, _______, KC__MUTE, _______, _______,         _______, KC_MPRV, KC_MPLY, KC_MNXT, _______,
                       _______, _______, _______,        KC_DEL,  MO(_ADJUST),  _______
 ),
 [_ADJUST] =  LAYOUT(
